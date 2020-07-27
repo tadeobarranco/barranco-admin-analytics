@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * <schema/>:               1' 54"
+ * <table/>:                1' 18"
+ * <column/>:               1' 27"
+ * <constraint primary />:  0' 59"
+ * new <column/>:           1' 17"
+ * <constraint unique />:   1' 19"
+ */
+-->
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="barranco_admin_analytics" resource="default" engine="innodb" comment="Barranco Admin Notification Table" >
+        <column xsi:type="int" name="id" padding="10" unsigned="true" nullable="false" identity="true" comment="ID" />
+        <column xsi:type="varchar" name="last_viewed_in_version" nullable="false" length="50" comment="last_viewed_in_version column" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id" />
+        </constraint>
+        <constraint xsi:type="unique" referenceId="BARRANCO_ADMIN_ANALYTICS_LAST_VIEWED_IN_VERSION">
+            <column name="last_viewed_in_version" />
+        </constraint>
+    </table>
+</schema>

@@ -1,0 +1,12 @@
+{
+    "barranco_admin_analytics": {
+        "column": {
+            "id": true,
+            "last_viewed_in_version": true
+        },
+        "constraint": {
+            "PRIMARY": true,
+            "BARRANCO_ADMIN_ANALYTICS_LAST_VIEWED_IN_VERSION": true
+        }
+    }
+}
