@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * <config/>:           1' 11"
+ * <default/>:          0' 07"
+ * <admin/>:            0' 08"
+ * <barranco_usage/>:   0' 09"
+ * <enabled/>:          0' 08"
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <admin>
+            <barranco_usage>
+                <enabled>1</enabled>
+            </barranco_usage>
+        </admin>     
+    </default>
+</config>

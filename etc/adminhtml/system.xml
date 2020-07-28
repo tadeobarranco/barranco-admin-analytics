@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * <config/>:           1' 46"
+ * <systen/>:           0' 07"
+ * <section/>:          0' 13"
+ * <group/>:            1' 10"
+ * group - <label/>:    0' 18"
+ * <field/>:            1' 15"
+ * field - <label/>:    0' 15"
+ * <source_model/>:     0' 39"
+ * <comment/>:          0' 14"
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <section id="admin">
+            <group id="barranco_usage" translate="label" type="text" sortOrder="3000" showInDefault="1" showInWebsite="0" showInStore="0">
+                <label>Barranco Admin Usage</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="1" showInDefault="1" showInWebsite="0" showInStore="0" >
+                    <label>Enable Barranco Admin Analytics</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Allow me to test this behavior</comment>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
