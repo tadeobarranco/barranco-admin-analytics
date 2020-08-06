@@ -16,7 +16,7 @@ interface AdminAnalyticsInterface
      * 
      * @return  null|int
      */
-    public function getId(): ?int;
+    public function getAdminAnalyticsId(): ?int;
 
     /**
      * Set barranco_admin_analytics id
@@ -24,7 +24,7 @@ interface AdminAnalyticsInterface
      * @param   int $id
      * @return  Barranco\AdminAnalytics\Api\Data\AdminAnalyticsInterface
      */
-    public function setId(int $id): self;
+    public function setAdminAnalyticsId(int $id): self;
 
     /**
      * Get barranco_admin_analytics last_viewed_in_version
