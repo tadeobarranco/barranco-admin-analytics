@@ -3,6 +3,7 @@
 namespace Barranco\AdminAnalytics\Model;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Barranco\AdminAnalytics\Api\AdminAnalyticsRepositoryInterface;
 use Barranco\AdminAnalytics\Api\Data\AdminAnalyticsInterface;
 use Barranco\AdminAnalytics\Model\Resource\AdminAnalytics as Resource;
@@ -30,7 +31,11 @@ class AdminAnalyticsRepository implements AdminAnalyticsRepositoryInterface
      */
     public function save(AdminAnalyticsInterface $adminAnalytics)
     {
-        $this->resource->save($adminAnalytics);
+        try {
+            $this->resource->save($adminAnalytics); 
+        } catch(\Exception $e) {
+            throw new LocalizedException(__($e->getMessage()));
+        } 
 
         return $adminAnalytics;
     }

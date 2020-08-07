@@ -4,11 +4,13 @@
  * default setUp:           01' 27"
  * testRepositoryInstance:  06' 22"
  * testSave:                41' 06"
+ * testSaveWithException:   07' 51"
  */
 
 namespace Barranco\AdminAnalytics\Test\Unit\Model;
 
 use PHPUnit\Framework\TestCase;
+use Magento\Framework\Exception\LocalizedException;
 use Barranco\AdminAnalytics\Api\AdminAnalyticsRepositoryInterface;
 use Barranco\AdminAnalytics\Model\AdminAnalytics;
 use Barranco\AdminAnalytics\Model\AdminAnalyticsRepository;
@@ -67,5 +69,22 @@ class AdminAnalyticsRepositoryTest extends TestCase
                         ->willReturnSelf();
 
         $this->assertEquals($this->model, $this->repository->save($this->model));
+    }
+
+    /**
+     * Test AdminAnalyticsRepository::save managing exception
+     * 
+     * @test
+     */
+    public function testSaveWithException()
+    {
+        $this->resource->expects($this->once())
+                        ->method('save')
+                        ->with($this->model)
+                        ->willThrowException(new \Exception());
+
+        $this->expectException(LocalizedException::class);
+
+        $this->repository->save($this->model);
     }
 }
