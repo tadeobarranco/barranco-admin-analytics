@@ -118,6 +118,28 @@ class AdminAnalyticsRepositoryTest extends TestCase
     }
 
     /**
+     * Test AdminAnalyticsRepository::getById managing exception
+     *
+     * @test
+     * @dataProvider idsList
+     */
+    public function testGetByIdWithException($id)
+    {
+        $this->factory->expects($this->once())
+                        ->method('create')
+                        ->willReturn($this->model);
+
+        $this->resource->expects($this->once())
+                        ->method('load')
+                        ->with($this->model, $id)
+                        ->willThrowException(new \Exception());
+
+        $this->expectException(LocalizedException::class);
+
+        $this->repository->getById($id);
+    }
+
+    /**
      * Data provider for IDs
      *
      * @return array

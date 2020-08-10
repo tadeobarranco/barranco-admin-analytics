@@ -56,7 +56,11 @@ class AdminAnalyticsRepository implements AdminAnalyticsRepositoryInterface
     {
         $model = $this->factory->create();
 
-        $this->resource->load($model, $adminAnalyticsId);
+        try {
+            $this->resource->load($model, $adminAnalyticsId);
+        } catch(\Exception $e) {
+            throw new LocalizedException(__($e->getMessage()));
+        }
 
         return $model;
     }
