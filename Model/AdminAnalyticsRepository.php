@@ -6,6 +6,7 @@ use Magento\Framework\Api\SearchCriteriaInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Barranco\AdminAnalytics\Api\AdminAnalyticsRepositoryInterface;
 use Barranco\AdminAnalytics\Api\Data\AdminAnalyticsInterface;
+use Barranco\AdminAnalytics\Api\Data\AdminAnalyticsInterfaceFactory;
 use Barranco\AdminAnalytics\Model\Resource\AdminAnalytics as Resource;
 
 class AdminAnalyticsRepository implements AdminAnalyticsRepositoryInterface
@@ -16,14 +17,22 @@ class AdminAnalyticsRepository implements AdminAnalyticsRepositoryInterface
     protected $resource;
 
     /**
+     * @var AdminAnalyticsInterfaceFactory
+     */
+    protected $factory;
+
+    /**
      * Repository constructor
      * 
      * @param Barranco\AdminAnalytics\Model\Resource\AdminAnalytics $resource
+     * @param Barranco\AdminAnalytics\Api\Data\AdminAnalyticsInterfaceFactory $factory
      */
     public function __construct(
-        Resource $resource
+        Resource $resource,
+        AdminAnalyticsInterfaceFactory $factory
     ) {
         $this->resource = $resource;
+        $this->factory  = $factory;
     }
 
     /**
@@ -41,11 +50,15 @@ class AdminAnalyticsRepository implements AdminAnalyticsRepositoryInterface
     }
 
     /**
-     * 
+     * @inheritdoc
      */
     public function getById(int $adminAnalyticsId)
     {
+        $model = $this->factory->create();
 
+        $this->resource->load($model, $adminAnalyticsId);
+
+        return $model;
     }
 
     /**

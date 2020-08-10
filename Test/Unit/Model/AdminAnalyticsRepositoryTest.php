@@ -5,6 +5,7 @@
  * testRepositoryInstance:  06' 22"
  * testSave:                41' 06"
  * testSaveWithException:   07' 51"
+ * testGetById:             13' 28"
  */
 
 namespace Barranco\AdminAnalytics\Test\Unit\Model;
@@ -12,6 +13,7 @@ namespace Barranco\AdminAnalytics\Test\Unit\Model;
 use PHPUnit\Framework\TestCase;
 use Magento\Framework\Exception\LocalizedException;
 use Barranco\AdminAnalytics\Api\AdminAnalyticsRepositoryInterface;
+use Barranco\AdminAnalytics\Api\Data\AdminAnalyticsInterfaceFactory;
 use Barranco\AdminAnalytics\Model\AdminAnalytics;
 use Barranco\AdminAnalytics\Model\AdminAnalyticsRepository;
 use Barranco\AdminAnalytics\Model\Resource\AdminAnalytics as Resource;
@@ -34,15 +36,22 @@ class AdminAnalyticsRepositoryTest extends TestCase
     private $resource;
 
     /**
+     * @var AdminAnalyticsInterfaceFactory
+     */
+    private $factory;
+
+    /**
      * Initialize test
      */
     protected function setUp()
     {
         $this->model        = $this->createMock(AdminAnalytics::class);
         $this->resource     = $this->createMock(Resource::class);
+        $this->factory      = $this->createMock(AdminAnalyticsInterfaceFactory::class);
 
         $this->repository   = new AdminAnalyticsRepository(
-                                $this->resource
+                                $this->resource,
+                                $this->factory
                             );
     }
 
@@ -86,5 +95,37 @@ class AdminAnalyticsRepositoryTest extends TestCase
         $this->expectException(LocalizedException::class);
 
         $this->repository->save($this->model);
+    }
+
+    /**
+     * Test AdminAnalyticsRepository::getById
+     *
+     * @test
+     * @dataProvider idsList
+     */
+    public function testGetById($id)
+    {
+        $this->factory->expects($this->once())
+                        ->method('create')
+                        ->willReturn($this->model);
+
+        $this->resource->expects($this->once())
+                        ->method('load')
+                        ->with($this->model, $id)
+                        ->willReturnSelf();
+
+        $this->assertEquals($this->model, $this->repository->getById($id));
+    }
+
+    /**
+     * Data provider for IDs
+     *
+     * @return array
+     */
+    public function idsList()
+    {
+        return [
+            ['123']
+        ];
     }
 }
