@@ -6,10 +6,12 @@
 
 namespace Barranco\AdminAnalytics\Api\Data;
 
+use Magento\Framework\Api\SearchResultsInterface;
+
 /**
  * @api
  */
-interface AdminAnalyticsSearchResultsInterface
+interface AdminAnalyticsSearchResultsInterface extends SearchResultsInterface
 {
 
     /**

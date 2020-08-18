@@ -3,11 +3,14 @@
 namespace Barranco\AdminAnalytics\Model;
 
 use Magento\Framework\Api\SearchCriteriaInterface;
+use Magento\Framework\Api\SearchCriteria\CollectionProcessorInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Barranco\AdminAnalytics\Api\AdminAnalyticsRepositoryInterface;
 use Barranco\AdminAnalytics\Api\Data\AdminAnalyticsInterface;
 use Barranco\AdminAnalytics\Api\Data\AdminAnalyticsInterfaceFactory;
+use Barranco\AdminAnalytics\Api\Data\AdminAnalyticsSearchResultsInterfaceFactory as SearchResultsInterfaceFactory;
 use Barranco\AdminAnalytics\Model\Resource\AdminAnalytics as Resource;
+use Barranco\AdminAnalytics\Model\Resource\AdminAnalytics\CollectionFactory;
 
 class AdminAnalyticsRepository implements AdminAnalyticsRepositoryInterface
 {
@@ -22,6 +25,21 @@ class AdminAnalyticsRepository implements AdminAnalyticsRepositoryInterface
     protected $factory;
 
     /**
+     * @var SearchResultsInterfaceFactory
+     */
+    protected $searchResultsFactory;
+
+    /**
+     * @var CollectionProcessorInterface
+     */
+    protected $collectionProcessor;
+
+    /**
+     * @var CollectionFactory
+     */
+    protected $collectionFactory;
+
+    /**
      * Repository constructor
      * 
      * @param Barranco\AdminAnalytics\Model\Resource\AdminAnalytics $resource
@@ -29,10 +47,16 @@ class AdminAnalyticsRepository implements AdminAnalyticsRepositoryInterface
      */
     public function __construct(
         Resource $resource,
-        AdminAnalyticsInterfaceFactory $factory
+        AdminAnalyticsInterfaceFactory $factory,
+        SearchResultsInterfaceFactory $searchResultsFactory,
+        CollectionProcessorInterface $collectionProcessor,
+        CollectionFactory $collectionFactory
     ) {
-        $this->resource = $resource;
-        $this->factory  = $factory;
+        $this->resource             = $resource;
+        $this->factory              = $factory;
+        $this->searchResultsFactory = $searchResultsFactory;
+        $this->collectionProcessor  = $collectionProcessor;
+        $this->collectionFactory    = $collectionFactory;
     }
 
     /**
@@ -66,11 +90,19 @@ class AdminAnalyticsRepository implements AdminAnalyticsRepositoryInterface
     }
 
     /**
-     * 
+     * @inheritdoc
      */
     public function getList(SearchCriteriaInterface $searchCriteria)
     {
+        $searchResults  = $this->searchResultsFactory->create();
+        $collection     = $this->collectionFactory->create();
 
+        $this->collectionProcessor->process($searchCriteria, $collection);
+        $searchResults->setSearchCriteria($searchCriteria);
+        $searchResults->setTotalCount($collection->getSize());
+        $searchResults->setItems($collection->getItems());
+
+        return $searchResults;
     }
 
     /**
