@@ -1,12 +1,13 @@
 <?php
 /**
- * class test definition:   01' 32"
- * default setUp:           01' 27"
- * testRepositoryInstance:  06' 22"
- * testSave:                41' 06"
- * testSaveWithException:   07' 51"
- * testGetById:             13' 28"
- * testGetList:             48' 09"
+ * class test definition:       01' 32"
+ * default setUp:               01' 27"
+ * testRepositoryInstance:      06' 22"
+ * testSave:                    41' 06"
+ * testSaveWithException:       07' 51"
+ * testGetById:                 13' 28"
+ * testGetList:                 48' 09"
+ * testGetListWithException(s): 20' 01"
  */
 
 namespace Barranco\AdminAnalytics\Test\Unit\Model;
@@ -186,6 +187,8 @@ class AdminAnalyticsRepositoryTest extends TestCase
     }
 
     /**
+     * Test AdminAnalyticsRepository::getList
+     *
      * @test
      * @dataProvider collectionList
      */
@@ -229,6 +232,160 @@ class AdminAnalyticsRepositoryTest extends TestCase
 
         $this->assertEquals($this->searchResults, $this->repository->getList($this->searchCriteria));
     }
+
+    /**
+     * Test AdminAnalyticsRepository::getList with Excpetion in the SearchResultsFactory object
+     *
+     * @test
+     */
+    public function testGetListWithExceptionInSearchResultsFactory()
+    {
+        $this->searchResultsFactory->expects($this->once())
+                        ->method('create')
+                        ->willThrowException(new \Exception());
+
+        $this->expectException(LocalizedException::class);
+
+        $this->repository->getList($this->searchCriteria);
+    }
+
+    /**
+     * Test AdminAnalyticsRepository::getList with Exception in the CollectionFactory object
+     *
+     * @test
+     */
+    public function testGetListWithExceptionInCollectionFactory()
+    {
+        $this->collectionFactory->expects($this->once())
+                        ->method('create')
+                        ->willThrowException(new \Exception);
+
+        $this->expectException(LocalizedException::class);
+
+        $this->repository->getList($this->searchCriteria);
+    }
+
+    /**
+     * Test AdminAnalyticsRepository::getList with Exception in the CollectionProcessor process method
+     *
+     * @test
+     */
+    public function testGetListWithExceptionInCollectionProcessor()
+    {
+        $this->collectionFactory->expects($this->once())
+                        ->method('create')
+                        ->willReturn($this->collection);
+
+        $this->collectionProcessor->expects($this->once())
+                        ->method('process')
+                        ->with($this->searchCriteria, $this->collection)
+                        ->willThrowException(new \Exception);
+
+        $this->expectException(LocalizedException::class);
+
+        $this->repository->getList($this->searchCriteria);
+    }
+
+    /**
+     * Test AdminAnalyticsRepository::getList with Exception in the setSearchCriteria method
+     *
+     * @test
+     */
+    public function testGetListWithExceptionInSetSearchCriteria()
+    {
+        $this->searchResultsFactory->expects($this->once())
+                        ->method('create')
+                        ->willReturn($this->searchResults);
+
+        $this->collectionFactory->expects($this->once())
+                        ->method('create')
+                        ->willReturn($this->collection);
+
+        $this->collectionProcessor->expects($this->once())
+                        ->method('process')
+                        ->with($this->searchCriteria, $this->collection)
+                        ->willReturnSelf();
+
+        $this->searchResults->expects($this->once())
+                        ->method('setSearchCriteria')
+                        ->with($this->searchCriteria)
+                        ->willThrowException(new \Exception);
+
+        $this->expectException(LocalizedException::class);
+
+        $this->repository->getList($this->searchCriteria);
+    }
+
+    /**
+     * Test AdminAnalyticsRepository::getList with Exception in the setTotalCount method
+     *
+     * @test
+     * @dataProvider collectionList
+     */
+    public function testGetListWithExceptionInSetTotalCount($total, $items)
+    {
+        $this->searchResultsFactory->expects($this->once())
+                        ->method('create')
+                        ->willReturn($this->searchResults);
+
+        $this->collectionFactory->expects($this->once())
+                        ->method('create')
+                        ->willReturn($this->collection);
+
+        $this->collectionProcessor->expects($this->once())
+                        ->method('process')
+                        ->with($this->searchCriteria, $this->collection)
+                        ->willReturnSelf();
+
+        $this->collection->expects($this->once())
+                        ->method('getSize')
+                        ->willReturn($total);
+
+        $this->searchResults->expects($this->once())
+                        ->method('setTotalCount')
+                        ->with($total)
+                        ->willThrowException(new \Exception);
+
+        $this->expectException(LocalizedException::class);
+
+        $this->repository->getList($this->searchCriteria);
+    }
+
+    /**
+     * Test AdminAnalyticsRepository::getList with Exception in the setTotalCount method
+     *
+     * @test
+     * @dataProvider collectionList
+     */
+    public function testGetListWithExceptionInSetItems($total, $items)
+    {
+        $this->searchResultsFactory->expects($this->once())
+                        ->method('create')
+                        ->willReturn($this->searchResults);
+
+        $this->collectionFactory->expects($this->once())
+                        ->method('create')
+                        ->willReturn($this->collection);
+
+        $this->collectionProcessor->expects($this->once())
+                        ->method('process')
+                        ->with($this->searchCriteria, $this->collection)
+                        ->willReturnSelf();
+
+        $this->collection->expects($this->once())
+                        ->method('getItems')
+                        ->willReturn($items);
+
+        $this->searchResults->expects($this->once())
+                        ->method('setItems')
+                        ->with($items)
+                        ->willThrowException(new \Exception);
+
+        $this->expectException(LocalizedException::class);
+
+        $this->repository->getList($this->searchCriteria);
+    }
+
 
     /**
      * Data provider for IDs

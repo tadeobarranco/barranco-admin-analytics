@@ -94,13 +94,18 @@ class AdminAnalyticsRepository implements AdminAnalyticsRepositoryInterface
      */
     public function getList(SearchCriteriaInterface $searchCriteria)
     {
-        $searchResults  = $this->searchResultsFactory->create();
-        $collection     = $this->collectionFactory->create();
+        try {
+            $searchResults  = $this->searchResultsFactory->create();
+            $collection     = $this->collectionFactory->create();
 
-        $this->collectionProcessor->process($searchCriteria, $collection);
-        $searchResults->setSearchCriteria($searchCriteria);
-        $searchResults->setTotalCount($collection->getSize());
-        $searchResults->setItems($collection->getItems());
+            $this->collectionProcessor->process($searchCriteria, $collection);
+
+            $searchResults->setSearchCriteria($searchCriteria);
+            $searchResults->setTotalCount($collection->getSize());
+            $searchResults->setItems($collection->getItems());
+        } catch(\Exception $e) {
+            throw new LocalizedException(__($e->getMessage()));
+        }
 
         return $searchResults;
     }
