@@ -111,10 +111,16 @@ class AdminAnalyticsRepository implements AdminAnalyticsRepositoryInterface
     }
 
     /**
-     * 
+     * @inheritdoc
      */
     public function delete(AdminAnalyticsInterface $adminAnalytics)
     {
+        try {
+            $this->resource->delete($adminAnalytics);
+        } catch(\Exception $e) {
+            throw new LocalizedException(__($e->getMessage()));
+        }
 
+        return $adminAnalytics->isDeleted();
     }
 }

@@ -8,6 +8,8 @@
  * testGetById:                 13' 28"
  * testGetList:                 48' 09"
  * testGetListWithException(s): 20' 01"
+ * testDelete:                  07' 05"
+ * testDeleteWithException:     02' 56"
  */
 
 namespace Barranco\AdminAnalytics\Test\Unit\Model;
@@ -386,6 +388,41 @@ class AdminAnalyticsRepositoryTest extends TestCase
         $this->repository->getList($this->searchCriteria);
     }
 
+    /**
+     * Test AdminAnalyticsRepository::delete
+     *
+     * @test
+     */
+    public function testDelete()
+    {
+        $this->resource->expects($this->once())
+                        ->method('delete')
+                        ->with($this->model)
+                        ->willReturnSelf();
+
+        $this->model->expects($this->once())
+                        ->method('isDeleted')
+                        ->willReturn(true);
+
+        $this->assertTrue($this->repository->delete($this->model));
+    }
+
+    /**
+     * Test AdminAnalyticsRepository::getList managing exception
+     *
+     * @test
+     */
+    public function testDeleteWithException()
+    {
+        $this->resource->expects($this->once())
+                        ->method('delete')
+                        ->with($this->model)
+                        ->willThrowException(new \Exception);
+
+        $this->expectException(LocalizedException::class);
+
+        $this->repository->delete($this->model);
+    }
 
     /**
      * Data provider for IDs
